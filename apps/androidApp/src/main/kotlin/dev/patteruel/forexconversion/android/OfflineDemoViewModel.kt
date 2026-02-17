@@ -71,7 +71,7 @@ class OfflineDemoViewModel(private val forexService: ForexServiceAdapter) : View
     }
 
     fun fetchOnStartUpOnce() {
-        forexService.setBaseURL("http://192.168.254.101:8080") // one-off
+        forexService.setBaseURL("http://192.168.254.105:8080") // one-off
         if (hasCalledFetchOnStartUp) {
             Timber.d("fetchOnStartUpOnce: Already called, skipping")
             return

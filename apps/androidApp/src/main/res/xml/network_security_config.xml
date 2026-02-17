@@ -5,6 +5,6 @@
         <domain includeSubdomains="true">thursday.local</domain>
         <domain includeSubdomains="true">localhost</domain>
         <domain includeSubdomains="true">10.0.2.2</domain>
-        <domain includeSubdomains="true">192.168.254.101</domain>
+        <domain includeSubdomains="true">192.168.254.105</domain>
     </domain-config>
 </network-security-config>
