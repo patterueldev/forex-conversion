@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import dev.patteruel.forexconversion.models.Converted
 
 class OfflineDemoViewModel(private val forexService: ForexServiceAdapter) : ViewModel() {
     
@@ -35,6 +36,9 @@ class OfflineDemoViewModel(private val forexService: ForexServiceAdapter) : View
 
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
+
+    private val _lastConversionResult = MutableStateFlow<Converted?>(null)
+    val lastConversionResult: StateFlow<Converted?> = _lastConversionResult
 
     private var hasCalledFetchOnStartUp = false
 
@@ -137,6 +141,7 @@ class OfflineDemoViewModel(private val forexService: ForexServiceAdapter) : View
                 val amount = _amountText.value.toDoubleOrNull() ?: 0.0
                 Timber.d("convert: Converting %f USD to PHP (offline: %s)", amount, _simulateOffline.value)
                 val converted = forexService.convertCurrency(amount = amount, from = "USD", to = "PHP")
+                _lastConversionResult.value = converted
                 val isOfflineStr = if (_simulateOffline.value) "offline" else "online"
                 _convertedAmount.value = "$isOfflineStr | ${converted.originalAmount} ${converted.rate.fromCurrency} -> ${String.format("%.2f", converted.convertedAmount)} ${converted.rate.toCurrency} @ rate=${String.format("%.2f", converted.rate.amount)}"
                 _errorMessage.value = null

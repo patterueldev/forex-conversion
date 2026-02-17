@@ -22,6 +22,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ResultScreenActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ForexConversion" />
+
     </application>
 
 </manifest>

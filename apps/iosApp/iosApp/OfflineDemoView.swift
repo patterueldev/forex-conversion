@@ -129,6 +129,9 @@ class OfflineDemoViewModel: ObservableObject {
     }
     @Published var showingBaseURLModal: Bool = false
     
+    // Last conversion result for navigation
+    @Published var lastConversionResult: Converted?
+    
     private var hasCalledFetchOnStartUp = false
     let forexService: ForexServiceProtocol
 
@@ -178,6 +181,7 @@ class OfflineDemoViewModel: ObservableObject {
         do {
             let amount = Double(amountText) ?? 0.0
             let converted = try await forexService.convertCurrency(amount: amount, from: "USD", to: "PHP")
+            lastConversionResult = converted
             convertedAmount = "\(simulateOffline ? "offline" : "online") | \(converted.originalAmount) \(converted.rate.fromCurrency) -> \(String(format: "%.2f", converted.convertedAmount)) \(converted.rate.toCurrency) @ rate=\(String(format: "%.2f", converted.rate.amount))"
         } catch {
             convertedAmount = "error"
@@ -192,6 +196,7 @@ class OfflineDemoViewModel: ObservableObject {
 
 struct OfflineDemoView: View {
     @StateObject private var vm = OfflineDemoViewModel(forexService: RealForexService())
+    @EnvironmentObject var iosNavigator: iOSNavigator
 
     var body: some View {
         ZStack {
@@ -247,9 +252,23 @@ struct OfflineDemoView: View {
                     }
 
                     Section(header: Text("Output")) {
-                        Text(vm.convertedAmount)
-                            .foregroundColor(.blue)
-                            .font(.system(.body, design: .monospaced))
+                        Button(action: {
+                            if let result = vm.lastConversionResult {
+                                let conversionResult = ConversionResult(
+                                    status: vm.simulateOffline ? .offline : .online,
+                                    fromCurrency: "USD",
+                                    toCurrency: "PHP",
+                                    inputAmount: result.originalAmount,
+                                    convertedAmount: result.convertedAmount
+                                )
+                                iosNavigator.navigate(with: conversionResult)
+                            }
+                        }) {
+                            Text(vm.convertedAmount)
+                                .foregroundColor(.blue)
+                                .font(.system(.body, design: .monospaced))
+                        }
+                        .disabled(vm.lastConversionResult == nil)
                     }
                 }
                 .navigationTitle("Offline/Online Demo")
@@ -322,5 +341,6 @@ struct OfflineDemoView_Previews: PreviewProvider {
         
         return OfflineDemoView()
             .environmentObject(OfflineDemoViewModel(forexService: mockService))
+            .environmentObject(iOSNavigator())
     }
 }

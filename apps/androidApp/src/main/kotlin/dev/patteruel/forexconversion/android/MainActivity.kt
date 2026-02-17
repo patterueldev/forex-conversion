@@ -9,6 +9,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import dev.patteruel.forexconversion.mobile.core.ForexMobileService
+import dev.patteruel.forexconversion.sharedui.navigation.AndroidResultScreenNavigator
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,10 +18,11 @@ class MainActivity : ComponentActivity() {
         val forexService = ForexMobileService()
         val adapter = ForexServiceAdapter(forexService)
         val viewModel = OfflineDemoViewModel(adapter)
+        val androidNavigator = AndroidResultScreenNavigator(this)
 
         setContent {
             ForexConversionTheme {
-                OfflineDemoScreen(viewModel = viewModel)
+                OfflineDemoScreen(viewModel = viewModel, navigator = androidNavigator)
             }
         }
     }

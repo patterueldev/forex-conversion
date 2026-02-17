@@ -26,6 +26,7 @@ kotlin {
             isStatic = true
             export(projects.packages.apiCore)
             export(projects.packages.shared)
+            export(projects.packages.sharedUi)
         }
     }
 
@@ -36,6 +37,7 @@ kotlin {
 
             api(projects.packages.apiCore)
             api(projects.packages.shared)
+            api(projects.packages.sharedUi)
         }
 
         androidMain.dependencies {
