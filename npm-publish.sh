@@ -28,15 +28,21 @@ sed -i '' "s/version = \"$CURRENT_VERSION\"/version = \"$NEW_VERSION\"/" "$GRADL
 echo "✅ Version updated"
 echo ""
 
+# Clear existing build artifacts
+echo "🧹 Cleaning previous build artifacts..."
+rm -rf packages/webCore/build/packages/js
+echo "✅ Cleaned old build artifacts"
+echo ""
+
 # Build the package
 echo "🏗️  Building the package..."
-./gradlew :packages:forex-web-sdk:build -x test --no-daemon > /dev/null 2>&1
+./gradlew :packages:forex-web-sdk:assembleJsPackage
 echo "✅ Build successful"
 echo ""
 
 # Publish the package
 echo "🚀 Publishing to NPM..."
-./gradlew :packages:forex-web-sdk:publishJsPackageToNpmjsRegistry -x test --no-daemon
+npm publish --access public packages/webCore/build/packages/js
 
 if [ $? -eq 0 ]; then
   echo ""
