@@ -10,12 +10,17 @@ import dev.patteruel.forexconversion.models.Converted
 import dev.patteruel.forexconversion.models.Currency
 import dev.patteruel.forexconversion.models.Rate
 import dev.patteruel.forexconversion.models.service.CalculateRequest
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 
 @OptIn(ExperimentalJsExport::class)
 @JsExport
 class ForexWebService {
+    // Use MainScope for JS which works in browser environments
+    private val scope: CoroutineScope = MainScope()
+    
     private val config: ApiConfiguration by lazy {
         ApiConfiguration()
     }
@@ -42,7 +47,7 @@ class ForexWebService {
     fun getCurrencyPHP(): Currency = Currency.PHP
 
     fun fetchLatestRate(onSuccess: (Rate) -> Unit, onError: (String) -> Unit) {
-        GlobalScope.launch {
+        scope.launch {
             try {
                 val request = RateRequest(
                     fromCurrency = Currency.USD,
@@ -60,7 +65,7 @@ class ForexWebService {
     fun getCachedRate(): Rate? = cachedRate
 
     fun convertCurrency(amount: Double, from: Currency, to: Currency, onSuccess: (Converted) -> Unit, onError: (String) -> Unit) {
-        GlobalScope.launch {
+        scope.launch {
             try {
                 val isNetworkAvailable = networkChecker.isNetworkAvailable()
                 val result = if (!isNetworkAvailable) {
