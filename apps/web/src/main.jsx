@@ -4,6 +4,15 @@ import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
 import './index.css'
 import App from './App.jsx'
 
+// Log when Compose Web UI is ready
+window.addEventListener('load', () => {
+  if (typeof window.renderResultScreen === 'function') {
+    console.log('✅ Compose Web UI loaded successfully')
+  } else {
+    console.warn('⚠️ Compose Web UI not detected')
+  }
+})
+
 const theme = createTheme({
   palette: {
     primary: {
