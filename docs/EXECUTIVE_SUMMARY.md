@@ -14,7 +14,7 @@
 |----------|-------------------|-------------------|--------|
 | **iOS** | ✅ ResultScreen.kt | Native Framework | ✅ **WORKING** |
 | **Android** | ✅ ResultScreen.kt | Gradle Dependency | ✅ **WORKING** |
-| **Web** | ✅ ResultScreen.kt | Script Bundle | ⚠️ **POSSIBLE** |
+| **Web** | ✅ ResultScreen.kt | Script Bundle | ✅ **PROVEN WORKING** |
 
 ## The Limitation We Hit
 
