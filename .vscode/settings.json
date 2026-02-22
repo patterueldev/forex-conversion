@@ -1,0 +1,59 @@
+{
+  // The number of spaces in a tab.
+  "editor.tabSize": 2,
+  // Specifies workbench icon theme.
+  "workbench.iconTheme": "vscode-icons",
+  // Controls how the editor should render whitespace characters.
+  "editor.renderWhitespace": "boundary",
+  "restoreTerminals.runOnStartup": true,
+  "restoreTerminals.terminals": [
+    {
+      "splitTerminals": [
+        {
+          "name": "server",
+          "commands": ["UNIRATE_API_KEY=4MBWHUU9ZADGSW5pWj3HE6FghnvgqIQq8sPYHJ6PiGWwzyF05GkRSQMWV5l3jqVt ./gradlew :apps:server:runFatJar"]
+        },
+        {
+          "name": "console",
+          "commands": []
+        }
+      ]
+    },
+    {
+      "splitTerminals": [
+        {
+          "name": "web",
+          "commands": ["cd apps/web && npm run dev"]
+        },
+        {
+          "name": "console",
+          "commands": []
+        }
+      ]
+    },
+    {
+      "splitTerminals": [
+        {
+          "name": "builder",
+          "commands": ["copilot"]
+        },
+        {
+          "name": "console",
+          "commands": []
+        }
+      ]
+    },
+    {
+      "splitTerminals": [
+        {
+          "name": "committer",
+          "commands": ["copilot --agent committer"]
+        },
+        {
+          "name": "console",
+          "commands": []
+        }
+      ]
+    }
+  ]
+}
