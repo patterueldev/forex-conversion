@@ -28,12 +28,17 @@ fun main() {
 }
 
 fun Application.module() {
+    val allowedHosts = System.getenv("ALLOWED_HOSTS")?.split(",")?.map { it.trim() }
+        ?: listOf("localhost", "thursday.local")
+    val allowedPorts = System.getenv("ALLOWED_PORTS")?.split(",")?.map { it.trim() }
+        ?: listOf("80", "5173")
     // Install CORS plugin
     install(CORS) {
-        allowHost("localhost:5173")
-        allowHost("localhost:3000")
-        allowHost("thursday.local:5173")
-        allowHost("thursday.local:3000")
+        for (host in allowedHosts) {
+            for (port in allowedPorts) {
+                allowHost("$host:$port")
+            }
+        }
         allowHeader("Content-Type")
         allowHeader("Authorization")
         allowMethod(io.ktor.http.HttpMethod.Get)
@@ -41,6 +46,7 @@ fun Application.module() {
         allowMethod(io.ktor.http.HttpMethod.Options)
         allowMethod(io.ktor.http.HttpMethod.Put)
         allowMethod(io.ktor.http.HttpMethod.Delete)
+        allowCredentials = false
     }
 
     // Install server-side ContentNegotiation so call.receive/deserialization works

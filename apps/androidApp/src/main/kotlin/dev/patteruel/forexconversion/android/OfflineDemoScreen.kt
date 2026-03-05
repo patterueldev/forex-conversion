@@ -1,6 +1,7 @@
 package dev.patteruel.forexconversion.android
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,10 +36,13 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import dev.patteruel.forexconversion.sharedui.models.ConversionResult
+import dev.patteruel.forexconversion.sharedui.models.Status
+import dev.patteruel.forexconversion.sharedui.navigation.AndroidResultScreenNavigator
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OfflineDemoScreen(viewModel: OfflineDemoViewModel) {
+fun OfflineDemoScreen(viewModel: OfflineDemoViewModel, navigator: AndroidResultScreenNavigator? = null) {
     val simulateOffline = viewModel.simulateOffline.collectAsState()
     val isLoading = viewModel.isLoading.collectAsState()
     val latestStoredRate = viewModel.latestStoredRate.collectAsState()
@@ -47,6 +51,7 @@ fun OfflineDemoScreen(viewModel: OfflineDemoViewModel) {
     val amountText = viewModel.amountText.collectAsState()
     val showingBaseURLModal = viewModel.showingBaseURLModal.collectAsState()
     val errorMessage = viewModel.errorMessage.collectAsState()
+    val lastConversionResult = viewModel.lastConversionResult.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.fetchOnStartUpOnce()
@@ -194,8 +199,24 @@ fun OfflineDemoScreen(viewModel: OfflineDemoViewModel) {
                         convertedAmount.value,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(8.dp),
-                        color = MaterialTheme.colorScheme.primary,
+                            .padding(8.dp)
+                            .clickable(enabled = lastConversionResult.value != null) {
+                                lastConversionResult.value?.let { converted ->
+                                    val status = if (simulateOffline.value) Status.OFFLINE else Status.ONLINE
+                                    val result = ConversionResult(
+                                        status = status,
+                                        fromCurrency = "USD",
+                                        toCurrency = "PHP",
+                                        inputAmount = converted.originalAmount,
+                                        convertedAmount = converted.convertedAmount
+                                    )
+                                    navigator?.navigate(result)
+                                }
+                            },
+                        color = if (lastConversionResult.value != null) 
+                            MaterialTheme.colorScheme.primary 
+                        else 
+                            MaterialTheme.colorScheme.onSurfaceVariant,
                         fontFamily = FontFamily.Monospace
                     )
                 }

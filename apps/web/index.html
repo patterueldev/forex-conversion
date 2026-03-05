@@ -8,6 +8,10 @@
   </head>
   <body>
     <div id="root"></div>
+
+    <!-- Load React app first (which imports forex-web-sdk) -->
     <script type="module" src="/src/main.jsx"></script>
+    
+    <!-- Compose Web UI will be lazy loaded when needed to avoid Kotlin/JS conflicts -->
   </body>
 </html>

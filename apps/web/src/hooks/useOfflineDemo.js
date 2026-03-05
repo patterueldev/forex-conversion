@@ -21,16 +21,19 @@ export const useOfflineDemo = () => {
     setIsLoading(true);
     try {
       const amount = parseFloat(amountText) || 0.0;
+      console.log('🔄 Converting:', { amount, from: 'USD', to: 'PHP', baseURL });
       const converted = await forexService.convertCurrency(amount, 'USD', 'PHP');
+      console.log('✅ Conversion result:', converted);
       
       const output = `${converted.originalAmount} USD → ${converted.convertedAmount.toFixed(2)} PHP @ rate=${converted.rate.amount.toFixed(2)}`;
       
       setConvertedAmount(output);
     } catch (error) {
+      console.error('❌ Conversion failed:', error);
       setConvertedAmount('error');
     }
     setIsLoading(false);
-  }, [amountText, forexService]);
+  }, [amountText, forexService, baseURL]);
 
   /**
    * Update base URL

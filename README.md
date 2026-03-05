@@ -1,6 +1,84 @@
 This is a Kotlin Multiplatform project targeting Android, iOS, Web, Server.
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
+## Quick Start
+
+### Prerequisites
+- **Docker** (for running server and web via `docker compose`)
+- **JDK 21** (for local development)
+- **Node.js 20+** (for web app development)
+- **Android SDK & Emulator** (for mobile development)
+- **Xcode** (for iOS development on macOS)
+
+### Setup Environment
+
+Create a `.env` file in the root directory with your configuration:
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` and add your Unirate API key:
+
+```env
+UNIRATE_API_KEY=your_api_key_here
+ALLOWED_HOSTS=localhost,thursday.local
+ALLOWED_PORTS=80,5173
+```
+
+### Docker Compose (Recommended for Quick Testing)
+
+Run server and web with a single command:
+
+```bash
+docker compose up -d
+```
+
+- **Server**: http://localhost:8080
+- **Web**: http://localhost
+
+Or with environment variables:
+
+```bash
+UNIRATE_API_KEY=your_key docker compose up -d
+```
+
+### Local Development
+
+#### Server (Ktor)
+
+```bash
+./gradlew :apps:server:run
+```
+
+Server runs on `http://localhost:8080`
+
+#### Web App (React + Vite)
+
+```bash
+cd apps/web
+npm install
+npm run dev
+```
+
+Web runs on `http://localhost:5173`
+
+#### Mobile Apps (iOS & Android)
+
+Start iOS Simulator and Android Emulator, then run:
+
+```bash
+bash run-mobile.sh
+```
+
+This script:
+- Opens iOS Simulator and boots the first available device
+- Starts the first available Android AVD
+- Builds and installs both mobile apps
+
+---
+
+## Project Structure
+
   It contains several subfolders:
     - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
     - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
