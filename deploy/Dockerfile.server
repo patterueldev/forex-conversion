@@ -1,0 +1,31 @@
+FROM eclipse-temurin:21-jdk-alpine AS builder
+
+# Create a minimal Android SDK stub so AGP can configure the KMP shared module.
+# The server only needs the JVM artifact from :packages:shared, no Android
+# compilation is performed, but AGP still validates the SDK at configuration time.
+ENV ANDROID_HOME=/opt/android-sdk
+RUN mkdir -p ${ANDROID_HOME}/platforms/android-36 \
+             ${ANDROID_HOME}/build-tools/36.0.0 && \
+    printf 'PK\005\006\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000' \
+        > ${ANDROID_HOME}/platforms/android-36/android.jar && \
+    printf 'Pkg.Revision=1\nAndroidVersion.ApiLevel=36\n' \
+        > ${ANDROID_HOME}/platforms/android-36/source.properties
+
+WORKDIR /build
+
+# Copy Gradle wrapper and build files first for better layer caching
+COPY gradlew gradlew.bat gradle.properties settings.gradle.kts build.gradle.kts ./
+COPY gradle/ gradle/
+
+# Copy only the modules the server depends on
+COPY packages/shared/ packages/shared/
+COPY apps/server/ apps/server/
+
+RUN echo "sdk.dir=${ANDROID_HOME}" > local.properties
+RUN chmod +x gradlew && ./gradlew :apps:server:buildFatJar --no-daemon
+
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+COPY --from=builder /build/apps/server/build/libs/server-all.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]

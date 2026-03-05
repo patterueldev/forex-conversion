@@ -28,8 +28,10 @@ fun main() {
 }
 
 fun Application.module() {
-    val allowedHosts = listOf("localhost", "thursday.local")
-    val allowedPorts = listOf("5173")
+    val allowedHosts = System.getenv("ALLOWED_HOSTS")?.split(",")?.map { it.trim() }
+        ?: listOf("localhost", "thursday.local")
+    val allowedPorts = System.getenv("ALLOWED_PORTS")?.split(",")?.map { it.trim() }
+        ?: listOf("80", "5173")
     // Install CORS plugin
     install(CORS) {
         for (host in allowedHosts) {

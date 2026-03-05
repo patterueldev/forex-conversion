@@ -5,7 +5,7 @@
   "workbench.iconTheme": "vscode-icons",
   // Controls how the editor should render whitespace characters.
   "editor.renderWhitespace": "boundary",
-  "restoreTerminals.runOnStartup": true,
+  "restoreTerminals.runOnStartup": false,
   "restoreTerminals.terminals": [
     {
       "splitTerminals": [
